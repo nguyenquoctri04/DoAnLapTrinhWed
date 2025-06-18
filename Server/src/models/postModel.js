@@ -20,6 +20,11 @@ const postSchema = new mongoose.Schema(
     ],
     interactions: {
       likes: { type: Number, default: 0 },
+      likedBy: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      }],
       comments: [
         { user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
           content: { type: String, required: true },
@@ -28,7 +33,6 @@ const postSchema = new mongoose.Schema(
       ],
       shares: { type: Number, default: 0 },
     },
-
     privacy: {
       type: String,
       enum: ["public", "friends", "private"],

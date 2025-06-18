@@ -139,7 +139,9 @@ const Header = () => {
             </button>
 
             {/* Profile Icon */}
-            <button className="cursor-pointer p-1.5 sm:p-2 rounded-full hover:bg-gray-100 transition-colors duration-200">
+            <button 
+              
+              className="cursor-pointer p-1.5 sm:p-2 rounded-full hover:bg-gray-100 transition-colors duration-200">
               <div className="h-6 w-6 sm:h-8 sm:w-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
                 <User className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
               </div>
