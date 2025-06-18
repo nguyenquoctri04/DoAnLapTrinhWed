@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from 'mongoose';
 
 const postSchema = new mongoose.Schema(
   {
@@ -23,10 +23,10 @@ const postSchema = new mongoose.Schema(
       likedBy: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        ref: "Users",
       }],
       comments: [
-        { user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        { user: { type: mongoose.Schema.Types.ObjectId, ref: 'Users' },
           content: { type: String, required: true },
           createdAt: { type: Date, default: Date.now }
         }
@@ -55,4 +55,4 @@ const postSchema = new mongoose.Schema(
 );
 
 const Post = mongoose.model("Post", postSchema);
-module.exports = Post;
+export default Post;

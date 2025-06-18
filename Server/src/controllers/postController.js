@@ -1,19 +1,18 @@
-const Post = require('../models/postModel');
-const Users = require('../models/userModel');
+import Post from '../models/postModel.js';
+import Users from '../models/userModel.js';
+
 
 const createPost = async (req, res) => {
   try {
     const { author, text, privacy, location, device, source } = req.body;
     const files = req.files;
 
-    // Kiểm tra bắt buộc
     if (!author) {
       return res.status(400).json({
         message: 'Thiếu thông tin bắt buộc: author',
       });
     }
 
-    // Kiểm tra người dùng có tồn tại không
     const user = await Users.findById(author);
     if (!user) {
       return res.status(404).json({
@@ -100,4 +99,47 @@ const toggleLikeByUser = async (req, res) => {
   res.status(200).json({ likes: post.interactions.likes });
 };
 
-module.exports = { createPost, getAllPostById, toggleLikeByUser};
+const createComment = async(req, res) => {
+  const {postId} = req.params;
+  const {userId, content} = req.body
+  if(!userId){
+    return res.status(400).json({message: "thieu userId"})
+  }
+  else if(!content){
+    return res.status(400).json({message: "thieu noi dung binh luan"})
+  }
+  try{
+    const post = await Post.findById(postId)
+    if(!postId) return res.status(404).json({message: "khong tim thay bai viet"})
+    post.interactions.comments.push({
+      user: userId,
+      content,
+      createdAt: new Date()
+    })
+
+    await post.save();
+    return res.status(200).json({message: "da them binh luan", post})
+  }
+  catch (err){
+    return res.status(500).json({message: "Loi server", error: error.message});
+  }
+}
+
+const getComments = async (req, res) => {
+  const { postId } = req.params;
+
+  try {
+    const post = await Post.findById(postId).populate('interactions.comments.user', 'name email'); // populate user nếu cần
+
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+
+    return res.status(200).json({ comments: post.interactions.comments.content });
+  
+  } catch (error) {
+    console.error('Error getting comments:', error);
+    return res.status(500).json({ message: 'Lỗi server khi lấy bình luận' });
+  }
+};
+export { createPost, getAllPostById, toggleLikeByUser, createComment, getComments};
